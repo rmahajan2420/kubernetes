@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: assign-node-nginx
+spec:
+  template:
+    metadata:
+      labels:
+        run: assign-node-nginx
+    spec:
+      containers:
+      - name: assign-node-nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+      nodeSelector:
+        node: test

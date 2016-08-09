@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: 2016-08-06T06:53:18Z
+  labels:
+    run: testimage
+  name: testimage
+  namespace: default
+  resourceVersion: "19594"
+  selfLink: /api/v1/namespaces/default/services/testimage
+  uid: 74fcc558-5ba2-11e6-b082-120157131d3d
+spec:
+  clusterIP: 10.0.135.134
+  ports:
+  - nodePort: 32184
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: testimage
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - hostname: a74fcc5585ba211e6b082120157131d3-1148253027.us-east-1.elb.amazonaws.com

@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: qa-moderator
+  name: qa-admin
 spec:
   ports:
     - name: "www"
       port: 80
       targetPort: 8080
   selector:
-    run: qa-moderator
+    run: qa-admin
   type: LoadBalancer

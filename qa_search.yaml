@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-search
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: qa-search
+    spec:
+      containers:
+      - name: qa-search
+        image: ttndfame/qa_search:qa-12.3.4
+        ports:
+        - containerPort:  8080
+        env:
+        - name: ENV_NAME
+          value:  qa
+        - name: MODULE
+          value:  search

@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-jobs
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: qa-jobs
+    spec:
+      containers:
+      - name: qa-jobs
+        image: ttndfame/qa_jobs:qa-12.17.100
+        ports:
+        - containerPort:  8080
+        env:
+        - name: ENV_NAME
+          value:  qa
+        - name: MODULE
+          value:  jobs

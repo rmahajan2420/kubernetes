@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-webappapi
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: qa-webappapi
+    spec:
+      containers:
+      - name: qa-webappapi
+        image: ttndfame/qa_webappapi:qa-12.16.51
+        ports:
+        - containerPort:  8080
+        env:
+        - name: ENV_NAME
+          value:  qa
+        - name: MODULE
+          value:  webappapi

@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-referral
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: qa-referral
+    spec:
+      containers:
+      - name: qa-referral
+        image: ttndfame/qa_referral:qa-12.16.51
+        ports:
+        - containerPort:  8080
+        env:
+        - name: ENV_NAME
+          value:  qa
+        - name: MODULE
+          value:  referral

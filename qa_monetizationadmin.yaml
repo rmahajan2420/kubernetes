@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-monetizationadmin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: qa-monetizationadmin
+    spec:
+      containers:
+      - name: qa-monetizationadmin
+        image: ttndfame/qa_monetizationadmin:qa-12.17.16
+        ports:
+        - containerPort:  8080
+        env:
+        - name: ENV_NAME
+          value:  qa
+        - name: MODULE
+          value:  monetizationadmin

@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-chat
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: qa-chat
+    spec:
+      containers:
+      - name: qa-chat
+        image: ttndfame/qa_chat:qa-12.0.11
+        ports:
+        - containerPort:  8080
+        env:
+        - name: ENV_NAME
+          value:  qa
+        - name: MODULE
+          value:  chat

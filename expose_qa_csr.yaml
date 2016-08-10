@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qa-csr
+spec:
+  ports:
+    - name: "www"
+      port: 80
+      targetPort: 8080
+  selector:
+    run: qa-csr
+  type: LoadBalancer

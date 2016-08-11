@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-homescreen
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: qa-homescreen
+    spec: 
+      containers: 
+        - name: qa-nginx
+          image: ttndfame/nginx:latest
+          ports: 
+          - containerPort: 80
+          env:
+          - name: ENV_NAME
+            value:  qa
+          - name: MODULE
+            value:  homescreen
+        - name: qa-homescreen
+          image: ttndfame/qa_homescreen:qa-12.17.95
+          ports:
+          - containerPort: 8080
+          env:
+          - name: ENV_NAME
+            value:  qa
+          - name: MODULE
+            value:  homescreen

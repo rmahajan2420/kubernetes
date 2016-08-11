@@ -7,7 +7,14 @@ RUN apt-get update && apt-get install -y \
 telnet \
 vim \
 nginx=1.4.6-1ubuntu3.4-luajit \
-luarocks
+luarocks \
+python-pip
+RUN /usr/bin/pip install awscli
 RUN luarocks install luasocket
+ADD startNginx.sh /opt/
 RUN rm -rf /etc/nginx/nginx.conf 
 COPY nginx.conf /etc/nginx/nginx.conf 
+ADD intermediate.crt /etc/nginx/ssl
+ADD star_livfame_com.crt /etc/nginx/ssl
+ADD star_livfame_com.crt.key /etc/nginx/ssl
+CMD ["/opt/startNginx.sh"]

@@ -12,9 +12,10 @@ python-pip
 RUN /usr/bin/pip install awscli
 RUN luarocks install luasocket
 ADD startNginx.sh /opt/
-RUN rm -rf /etc/nginx/nginx.conf 
+RUN rm -rf /etc/nginx/nginx.conf
+RUN mkdir -p /etc/nginx/ssl
 COPY nginx.conf /etc/nginx/nginx.conf 
-ADD intermediate.crt /etc/nginx/ssl
-ADD star_livfame_com.crt /etc/nginx/ssl
-ADD star_livfame_com.crt.key /etc/nginx/ssl
+ADD intermediate.crt /etc/nginx/ssl/intermediate.crt
+ADD star_livfame_com.crt /etc/nginx/ssl/star_livfame_com.crt
+ADD star_livfame_com.key /etc/nginx/ssl/star_livfame_com.key
 CMD ["/opt/startNginx.sh"]

@@ -22,6 +22,5 @@ elif [ $ENV_NAME = 'qa1' ]
 fi
 AWS=`which aws`
 $AWS s3 cp s3://${BUCKET}/kubernetes/${MODULE}/nginx/conf/${ENV_NAME}-${MODULE}.conf /etc/nginx/sites-enabled/ --region us-east-1
-service nginx restart
+/usr/sbin/service nginx start
 tailf /dev/null
-

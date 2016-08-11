@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-mysql
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: nginx-mysql
+    spec: 
+      containers: 
+        - name: nginx
+          image: nginx
+          ports: 
+          - containerPort: 80
+        - name: mysql
+          image: mysql
+          ports:
+          - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value:  password            

@@ -1,0 +1,13 @@
+FROM ubuntu:14.04
+MAINTAINER Rakesh Mahajan
+RUN apt-get update
+RUN apt-get install -y software-properties-common python-software-properties
+RUN apt-add-repository ppa:bhadauria-nitin/nginx-lua
+RUN apt-get update && apt-get install -y \
+telnet \
+vim \
+nginx=1.4.6-1ubuntu3.4-luajit \
+luarocks
+RUN luarocks install luasocket
+RUN rm -rf /etc/nginx/nginx.conf 
+COPY nginx.conf /etc/nginx/nginx.conf 

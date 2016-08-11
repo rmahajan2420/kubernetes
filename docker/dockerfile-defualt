@@ -1,0 +1,8 @@
+FROM nginx
+MAINTAINER Rakesh Mahajan
+EXPOSE 80
+RUN apt-get update
+RUN apt-get install -y telnet 
+ENTRYPOINT /usr/sbin/service nginx restart
+
+

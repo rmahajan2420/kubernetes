@@ -12,6 +12,12 @@ spec:
       containers:
       - name: qa-admin
         image: ttndfame/qa_admin:qa-12.17.52
+        readinessProbe:
+          httpGet:
+            path: /heartbeat
+            port: 8080
+          initialDelaySeconds: 100
+          timeoutSeconds: 1
         ports:
         - containerPort:  8080
         env:

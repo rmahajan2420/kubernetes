@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: qa-chat
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -12,6 +12,11 @@ spec:
       containers:
       - name: qa-chat
         image: ttndfame/qa_chat:qa-12.0.11
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 50
+          timeoutSeconds: 5
         ports:
         - containerPort:  8080
         env:

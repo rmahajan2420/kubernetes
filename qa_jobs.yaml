@@ -12,6 +12,12 @@ spec:
       containers:
       - name: qa-jobs
         image: ttndfame/qa_jobs:qa-12.17.100
+        readinessProbe:
+          httpGet:
+           path: /heartbeat
+           port: 8080
+          initialDelaySeconds: 100
+          timeoutSeconds: 1
         ports:
         - containerPort:  8080
         env:

@@ -1,13 +1,13 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: qa-homescreen
+  name: qa-beamdetail
 spec:
   replicas: 2
   template:
     metadata:
       labels:
-        run: qa-homescreen
+        run: qa-beamdetail
     spec: 
       containers: 
         - name: qa-nginx
@@ -18,14 +18,14 @@ spec:
           - name: ENV_NAME
             value:  qa
           - name: MODULE
-            value:  homescreen
-        - name: qa-homescreen
-          image: ttndfame/qa_homescreen:qa-12.17.84
+            value:  beamdetail
+        - name: qa-beamdetail
+          image: ttndfame/qa_beamdetail:qa-12.17.46
           readinessProbe:
             httpGet:
               path: /heartbeat
               port: 8080
-            initialDelaySeconds: 100
+            initialDelaySeconds: 200
             timeoutSeconds: 1
           ports:
           - containerPort: 8080
@@ -33,4 +33,4 @@ spec:
           - name: ENV_NAME
             value:  qa
           - name: MODULE
-            value:  homescreen
+            value:  beamdetail

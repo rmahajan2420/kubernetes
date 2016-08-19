@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-beamarchive
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: qa-beamarchive
+    spec:
+      containers:
+      - name: qa-beamarchive
+        image: ttndfame/qa_beamarchive:qa-12.17.98
+        ports:
+        - containerPort:  8080
+        readinessProbe:
+          httpGet:
+            path: /heartbeat
+            port: 8080
+          initialDelaySeconds: 200
+          timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: "200m"
+          limits:
+            cpu: "250m"
+        env:
+        - name: ENV_NAME
+          value:  qa
+        - name: MODULE
+          value:  beamarchive
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qa-beamarchive
+spec:
+  ports:
+    - name: "www"
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+  selector:
+    run: qa-beamarchive

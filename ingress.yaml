@@ -1,8 +1,29 @@
-apiVersion: extensions/v1beta1
+Version: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: test-ingress
+  name: infraingress
 spec:
-  backend:
-    serviceName: testsvc
-    servicePort: 80
+  rules:
+  - host: redacted.test.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service1
+          servicePort: 80
+      - path: /notebooks
+        backend:
+          serviceName: service2
+          servicePort: 8888
+  - host: redacted2.test.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service3
+          servicePort: 80
+      - path: /help
+        backend:
+          serviceName: service4
+          servicePort: 8888
+          servicePort: 80

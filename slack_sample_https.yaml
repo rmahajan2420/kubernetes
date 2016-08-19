@@ -1,0 +1,24 @@
+kind: Service
+apiVersion: v1
+metadata:
+ labels:
+   app: myapp
+   environment: demo
+ name: myapp-elb
+ namespace: default
+ annotations:
+   service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:iam::2xxxx3650764:server-certificate/wildcard.myapp.com"
+   service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+spec:
+ type: LoadBalancer
+ ports:
+ - port: 80
+   name: http
+   targetPort: http
+ - port: 443
+   name: https
+   targetPort: http
+ selector:
+   environment: demo
+   app: myapp

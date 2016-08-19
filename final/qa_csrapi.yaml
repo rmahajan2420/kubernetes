@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: qa-moderator
+  name: qa-csrapi
 spec:
   replicas: 1
   strategy:
@@ -12,11 +12,11 @@ spec:
   template:
     metadata:
       labels:
-        run: qa-moderator
+        run: qa-csrapi
     spec:
       containers:
-      - name: qa-moderator
-        image: ttndfame/qa_moderator:qa-12.17.6
+      - name: qa-csrapi
+        image: ttndfame/qa_csrapi:qa-12.3.4
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -29,12 +29,12 @@ spec:
         - name: ENV_NAME
           value:  qa
         - name: MODULE
-          value:  moderator
+          value:  csrapi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: qa-moderator
+  name: qa-csrapi
 spec:
   ports:
     - name: "www"
@@ -42,4 +42,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: qa-moderator
+    run: qa-csrapi

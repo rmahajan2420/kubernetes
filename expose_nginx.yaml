@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: qa-beamdetail
+  name: qa-screen
 spec:
   ports:
     - name: "www"
       port: 80
-      targetPort: 80
+      targetPort: 8080
   selector:
-    run: qa-beamdetail
-  type: LoadBalancer
+    run: qa-homescreen
+  type: ExternalIp

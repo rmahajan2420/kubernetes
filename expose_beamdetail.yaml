@@ -9,4 +9,6 @@ spec:
       targetPort: 80
   selector:
     run: qa-beamdetail
-  type: LoadBalancer
+  type: externalIPs 
+  #externalIPs: 
+  # - 80.11.12.10

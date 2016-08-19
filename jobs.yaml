@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-jobs
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: qa-jobs
+    spec:
+      containers:
+      - name: qa-jobs
+        image: ttndfame/qa_jobs:qa-12.17.100
+        ports:
+        - containerPort:  8080
+        readinessProbe:
+          httpGet:
+            path: /heartbeat
+            port: 8080
+          initialDelaySeconds: 200
+          timeoutSeconds: 1
+        env:
+        - name: ENV_NAME
+          value:  qa
+        - name: MODULE
+          value:  jobs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qa-jobs
+spec:
+  type: NodePort
+  ports:
+    - name: "www"
+      port: 80
+      nodePort: 30301
+      targetPort: 8080
+  selector:
+    run: qa-jobs
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: qa-jobs
+spec:
+  rules: 
+  - host: localhost
+    http:
+      paths:
+      - path: /a
+        backend:
+          serviceName: qa-jobs
+          servicePort: 80

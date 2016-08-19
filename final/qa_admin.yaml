@@ -3,7 +3,12 @@ kind: Deployment
 metadata:
   name: qa-admin
 spec:
-  replicas: 2
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -11,17 +16,30 @@ spec:
     spec:
       containers:
       - name: qa-admin
-        image: ttndfame/qa_admin:qa-12.17.52
+        image: ttndfame/qa_admin:qa-12.19.23
+        ports:
+        - containerPort:  8080
         readinessProbe:
           httpGet:
             path: /heartbeat
             port: 8080
-          initialDelaySeconds: 100
+          initialDelaySeconds: 200
           timeoutSeconds: 1
-        ports:
-        - containerPort:  8080
         env:
         - name: ENV_NAME
           value:  qa
         - name: MODULE
           value:  admin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qa-admin
+spec:
+  ports:
+    - name: "www"
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+  selector:
+    run: qa-admin

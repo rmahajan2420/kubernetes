@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: qa-jobs
-        image: ttndfame/qa_jobs:qa-12.17.100
+        image: ttndfame/qa_jobs:qa-12.21.8
         ports:
         - containerPort:  8080
         readinessProbe:

@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: qa-worker
+  name: qa-ci
 spec:
   replicas: 1
   strategy:
@@ -12,11 +12,11 @@ spec:
   template:
     metadata:
       labels:
-        run: qa-worker
+        run: qa-ci
     spec:
       containers:
-      - name: qa-worker
-        image: ttndfame/qa_worker:qa-12.21.17
+      - name: qa-ci
+        image: ttndfame/qa_ci:qa-12.21.8
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -29,12 +29,12 @@ spec:
         - name: ENV_NAME
           value:  qa
         - name: MODULE
-          value:  worker
+          value:  ci
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: qa-worker
+  name: qa-ci
 spec:
   ports:
     - name: "www"
@@ -42,4 +42,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: qa-worker
+    run: qa-ci

@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ENV_NAME-MODULE
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: ENV_NAME-MODULE
+    spec:
+      containers:
+      - name: ENV_NAME-MODULE
+        image: ttndfame/ENV_NAME_MODULE:IMAGE
+        ports:
+        - containerPort:  8080
+        readinessProbe:
+          httpGet:
+            path: /heartbeat
+            port: 8080
+          initialDelaySeconds: 200
+          timeoutSeconds: 1
+        env:
+        - name: ENV_NAME
+          value:  qa
+        - name: MODULE
+          value:  jobs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ENV_NAME-MODULE
+spec:
+  ports:
+    - name: "www"
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+  selector:
+    run: ENV_NAME-MODULE

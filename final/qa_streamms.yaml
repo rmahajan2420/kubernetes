@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-streamms
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: qa-streamms
+    spec: 
+      containers: 
+        - name: qa-nginx
+          image: ttndfame/nginx:latest
+          ports: 
+          - containerPort: 80
+          env:
+          - name: ENV_NAME
+            value:  qa
+          - name: MODULE
+            value:  streamms
+        - name: qa-streamms
+          image: ttndfame/qa_streamms:qa-12.17.101
+          readinessProbe:
+            httpGet:
+              path: /heartbeat
+              port: 8080
+            initialDelaySeconds: 200
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+          env:
+          - name: ENV_NAME
+            value:  qa
+          - name: MODULE
+            value:  streamms
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qa-streamms
+spec:
+  ports:
+    - name: "www"
+      port: 80
+      targetPort: 80
+  selector:
+    run: qa-streamms
+  type: LoadBalancer

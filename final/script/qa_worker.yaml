@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: ENV_NAME-MODULE
+  name: qa-worker
 spec:
   replicas: 1
   strategy:
@@ -12,11 +12,11 @@ spec:
   template:
     metadata:
       labels:
-        run: ENV_NAME-MODULE
+        run: qa-worker
     spec:
       containers:
-      - name: ENV_NAME-MODULE
-        image: ttndfame/ENV_NAME_MODULE:IMAGE
+      - name: qa-worker
+        image: ttndfame/qa_worker:qa-12.21.38
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -27,14 +27,14 @@ spec:
           timeoutSeconds: 1
         env:
         - name: ENV_NAME
-          value:  qa
+          value: qa
         - name: MODULE
-          value:  jobs
+          value:  worker
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ENV_NAME-MODULE
+  name: qa-worker
 spec:
   ports:
     - name: "www"
@@ -42,4 +42,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: ENV_NAME-MODULE
+    run: qa-worker

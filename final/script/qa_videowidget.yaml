@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: qa-ci
+  name: qa-videowidget
 spec:
   replicas: 1
   strategy:
@@ -12,11 +12,11 @@ spec:
   template:
     metadata:
       labels:
-        run: qa-ci
+        run: qa-videowidget
     spec:
       containers:
-      - name: qa-ci
-        image: ttndfame/qa_ci:qa-12.21.8
+      - name: qa-videowidget
+        image: ttndfame/qa_videowidget:qa-12.21.39
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -27,16 +27,14 @@ spec:
           timeoutSeconds: 1
         env:
         - name: ENV_NAME
-          value:  qa
+          value: qa
         - name: MODULE
-          value:  ci
-      nodeSelector:
-        mod: ci
+          value:  videowidget
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: qa-ci
+  name: qa-videowidget
 spec:
   ports:
     - name: "www"
@@ -44,4 +42,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: qa-ci
+    run: qa-videowidget

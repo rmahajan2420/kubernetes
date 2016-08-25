@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: qa-tracking
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: qa-tracking
+    spec: 
+      containers: 
+        - name: qa-nginx
+          image: ttndfame/nginx:latest
+          ports: 
+          - containerPort: 80
+          env:
+          - name: ENV_NAME
+            value:  qa
+          - name: MODULE
+            value:  tracking
+        - name: qa-tracking
+          image: ttndfame/qa_tracking:qa-12.17.72
+          readinessProbe:
+            httpGet:
+              path: /heartbeat
+              port: 8080
+            initialDelaySeconds: 200
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+          env:
+          - name: ENV_NAME
+            value:  qa
+          - name: MODULE
+            value:  tracking
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qa-tracking
+spec:
+  ports:
+    - name: "www"
+      port: 80
+      targetPort: 80
+  selector:
+    run: qa-tracking
+  type: LoadBalancer

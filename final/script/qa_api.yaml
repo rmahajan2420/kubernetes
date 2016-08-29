@@ -1,8 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: SERVER-APP
-  namespace: SERVER
+  name: qa-api
 spec:
   replicas: 1
   strategy:
@@ -13,20 +12,20 @@ spec:
   template:
     metadata:
       labels:
-        run: SERVER-APP
+        run: qa-api
     spec: 
       containers: 
-        - name: SERVER-nginx
+        - name: qa-nginx
           image: ttndfame/nginx:latest
           ports: 
           - containerPort: 80
           env:
           - name: ENV_NAME
-            value:  SERVER
+            value:  qa
           - name: MODULE
-            value:  APP
-        - name: SERVER-APP
-          image: ttndfame/SERVER_APP:IMAGE
+            value:  api
+        - name: qa-api
+          image: ttndfame/qa_api:qa-12.21.44
           readinessProbe:
             httpGet:
               path: /heartbeat
@@ -37,25 +36,19 @@ spec:
           - containerPort: 8080
           env:
           - name: ENV_NAME
-            value:  SERVER
+            value:  qa
           - name: MODULE
-            value:  APP
+            value:  api
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: SERVER-APP
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+  name: qa-api
 spec:
   ports:
-    - name: "http"
-      port: 80
-      targetPort: 80
-    - name: "https"
+    - name: "www"
       port: 80
       targetPort: 80
   selector:
-    run: SERVER-APP
+    run: qa-api
   type: LoadBalancer

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: qa-admin
-        image: ttndfame/qa_admin:qa-12.19.23
+        image: ttndfame/qa_admin:qa-12.21.44
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -34,11 +34,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
   name: qa-admin
 spec:
   ports:
-    - name: "www"
+    - name: "http"
       port: 80
+      targetPort: 8080
+    - name: "https"
+      port: 443
       targetPort: 8080
   type: LoadBalancer
   selector:

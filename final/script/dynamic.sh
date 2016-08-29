@@ -13,18 +13,19 @@ FILEPATH=/root/kube_files/kubernetes/final/script
 ECHO=`which echo`
 env=$1
 module=$2
-image=$3
+#image=$3
 containers=$4
+aws s3 cp s3://fameplus-qa-private/docker/tag.txt .
+tag=`cat tag.txt`
 
-
-usage(){
-  echo -e "\033[1;4m$0: Usage error. Usage: \033[0m"
-  echo -e "${0} ${LIGHTPURPLE_UL} Execute the script as SVC-WEPW user" 
-  echo -e "${0} ${LIGHTGREEN} -f ${GREEN_UL}INPUTFILEPATH ${NOCOLOUR} ${LIGHTGREEN}-e ${GREEN_UL}ENVIORNMENT PARAMETER${NOCOLOUR}"
-  echo -e "${LIGHTPURPLE_UL}INPUTFILEPATH${NOCOLOUR}${CYAN} is the full disk path of the ${RED_UL}tar.gz file" 
-  echo -e "${LIGHTPURPLE_UL}ENVIORNMENT PARAMETER ${NOCOLOUR} ${CYAN} can have one of these DEV/SYS/UAT/PREPROD values ${NOCOLOUR}"
-  exit 1
-}
+#usage(){
+#  echo -e "\033[1;4m$0: Usage error. Usage: \033[0m"
+#  echo -e "${0} ${LIGHTPURPLE_UL} Execute the script as SVC-WEPW user" 
+#  echo -e "${0} ${LIGHTGREEN} -f ${GREEN_UL}INPUTFILEPATH ${NOCOLOUR} ${LIGHTGREEN}-e ${GREEN_UL}ENVIORNMENT PARAMETER${NOCOLOUR}"
+#  echo -e "${LIGHTPURPLE_UL}INPUTFILEPATH${NOCOLOUR}${CYAN} is the full disk path of the ${RED_UL}tar.gz file" 
+#  echo -e "${LIGHTPURPLE_UL}ENVIORNMENT PARAMETER ${NOCOLOUR} ${CYAN} can have one of these DEV/SYS/UAT/PREPROD values ${NOCOLOUR}"
+#  exit 1
+#}
 
 
 if [ $# != 4 ]; then
@@ -43,4 +44,3 @@ fi
 
 $ECHO "Deploying Module $module on Env $env with Version $image"
 $KUBECTL apply -f $FILEPATH/$filename
-

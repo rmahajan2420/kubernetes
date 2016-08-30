@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: qa-admin
+  namespace: qa
 spec:
   replicas: 1
   strategy:
@@ -30,6 +31,8 @@ spec:
           value:  qa
         - name: MODULE
           value:  admin
+      nodeSelector:
+        node: test
 ---
 apiVersion: v1
 kind: Service

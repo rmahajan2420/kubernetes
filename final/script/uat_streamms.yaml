@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: uat-streamms
+  namespace: uat
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: uat-streamms
+    spec: 
+      containers: 
+        - name: uat-nginx
+          image: ttndfame/nginx:latest
+          ports: 
+          - containerPort: 80
+          env:
+          - name: ENV_NAME
+            value:  uat
+          - name: MODULE
+            value:  streamms
+        - name: uat-streamms
+          image: ttndfame/uat_streamms:uat-6.12.14
+          readinessProbe:
+            httpGet:
+              path: /heartbeat
+              port: 8080
+            initialDelaySeconds: 200
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+          env:
+          - name: ENV_NAME
+            value:  uat
+          - name: MODULE
+            value:  streamms
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uat-streamms
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+spec:
+  ports:
+    - name: "http"
+      port: 80
+      targetPort: 80
+    - name: "https"
+      port: 80
+      targetPort: 80
+  selector:
+    run: uat-streamms
+  type: LoadBalancer

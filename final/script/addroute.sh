@@ -9,19 +9,19 @@ K8SMASTERID=$($AWS ec2 describe-instances --region 'us-east-1' --filters Name=ta
 
 
 #K8SMINIONID=$($AWS ec2 describe-instances --region 'us-east-1' --filters Name=tag:Name,Values=$K8SMINIONNAME --query 'Reservations[].Instances[].[InstanceId]' --output text | sed '$!N;s/\n/ /' | awk '{print $1}')
-K8SMINIONID=$($AWS ec2 describe-instances --region 'us-east-1' --filters Name=tag:Role,Values=$K8SMINIONNAME --query 'Reservations[].Instances[].[InstanceId]' --output text | sed '$!N;s/\n/ /')
+K8SMINIONID=$($AWS ec2 describe-instances --region 'us-east-1' --filters Name=tag:Role,Values=$K8SMINIONNAME --query 'Reservations[].Instances[].[InstanceId]' --output text )
 
 #SUBNETID=$($AWS ec2 describe-instances --region 'us-east-1' --filters Name=tag:Role,Values=$K8SMINIONNAME --query 'Reservations[].Instances[].[SubnetId]' --output text | sed '$!N;s/\n/ /' | awk '{print $1}')
 
 SUBNET_IDs=($($AWS ec2 describe-instances --region 'us-east-1' --filters Name=tag:Role,Values=$K8SMINIONNAME --query 'Reservations[].Instances[].[SubnetId]' --output text))
 
-ROUTETABLEID=$($AWS ec2 describe-route-tables --region us-east-1 --query 'RouteTables[*].Associations[*].RouteTableId[]' --filters "Name=association.subnet-id,Values=${SUBNET_IDs[1]}" --output text)
+ROUTETABLEID=($($AWS ec2 describe-route-tables --region us-east-1 --query 'RouteTables[*].Associations[*].RouteTableId[]' --filters "Name=association.subnet-id,Values=${SUBNET_IDs[1]}" --output text))
 
 
 echo "Master" $K8SMASTERID
 echo "Minion" $K8SMINIONID
-echo "Subnet Id" $SUBNETID
-echo "RouteTB ID" $ROUTETABLEID
+echo "Subnet Id" ${SUBNET_IDs[1]}
+echo "RouteTB ID" ${ROUTETABLEID[1]}
 
 #kubectl describe nodes/$(kubectl get nodes | tail -1 | awk '{print $1}') | grep PodCIDR | awk '{print $2}'
 

@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: uat-search
+  name: uat-beamarchive
   namespace: uat
 spec:
   replicas: 1
@@ -13,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-        run: uat-search
+        run: uat-beamarchive
     spec:
       containers:
-      - name: uat-search
-        image: ttndfame/uat_search:uat-6.12.14
+      - name: uat-beamarchive
+        image: ttndfame/uat_beamarchive:uat-6.12.14
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -30,12 +30,13 @@ spec:
         - name: ENV_NAME
           value: uat
         - name: MODULE
-          value:  search
+          value:  beamarchive
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: uat-search
+  name: uat-beamarchive
+  namespace: uat
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
@@ -49,4 +50,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: uat-search
+    run: uat-beamarchive

@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: uat-webappapi
+  name: uat-csrapi
   namespace: uat
 spec:
   replicas: 1
@@ -13,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-        run: uat-webappapi
+        run: uat-csrapi
     spec:
       containers:
-      - name: uat-webappapi
-        image: ttndfame/uat_webappapi:uat-6.12.14
+      - name: uat-csrapi
+        image: ttndfame/uat_csrapi:uat-6.12.22
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -30,12 +30,13 @@ spec:
         - name: ENV_NAME
           value: uat
         - name: MODULE
-          value:  webappapi
+          value:  csrapi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: uat-webappapi
+  name: uat-csrapi
+  namespace: uat
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
@@ -49,4 +50,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: uat-webappapi
+    run: uat-csrapi

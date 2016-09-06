@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: uat-worker
+  name: uat-chatms
   namespace: uat
 spec:
   replicas: 1
@@ -13,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-        run: uat-worker
+        run: uat-chatms
     spec:
       containers:
-      - name: uat-worker
-        image: ttndfame/uat_worker:uat-6.12.14
+      - name: uat-chatms
+        image: ttndfame/uat_chatms:uat-6.12.14
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -30,12 +30,13 @@ spec:
         - name: ENV_NAME
           value: uat
         - name: MODULE
-          value:  worker
+          value:  chatms
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: uat-worker
+  name: uat-chatms
+  namespace: uat
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
@@ -49,4 +50,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: uat-worker
+    run: uat-chatms

@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: uat-homescreen
+  name: uat-vodhs
   namespace: uat
 spec:
   replicas: 1
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        run: uat-homescreen
+        run: uat-vodhs
     spec: 
       containers: 
         - name: uat-nginx
@@ -24,9 +24,9 @@ spec:
           - name: ENV_NAME
             value:  uat
           - name: MODULE
-            value:  homescreen
-        - name: uat-homescreen
-          image: ttndfame/uat_homescreen:uat-6.12.14
+            value:  vodhs
+        - name: uat-vodhs
+          image: ttndfame/uat_vodhs:uat-6.12.14
           readinessProbe:
             httpGet:
               path: /heartbeat
@@ -39,12 +39,13 @@ spec:
           - name: ENV_NAME
             value:  uat
           - name: MODULE
-            value:  homescreen
+            value:  vodhs
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: uat-homescreen
+  name: uat-vodhs
+  namespace: uat
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
@@ -52,10 +53,10 @@ spec:
   ports:
     - name: "http"
       port: 80
-      targetPort: 80
+      targetPort: 8080
     - name: "https"
-      port: 80
-      targetPort: 80
+      port: 443
+      targetPort: 8080
   selector:
-    run: uat-homescreen
+    run: uat-vodhs
   type: LoadBalancer

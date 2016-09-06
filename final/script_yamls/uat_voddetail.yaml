@@ -35,6 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: uat
   name: uat-voddetail
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016

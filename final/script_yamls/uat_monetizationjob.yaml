@@ -1,7 +1,8 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: qa-location
+  name: uat-monetizationjob
+  namespace: uat
 spec:
   replicas: 1
   strategy:
@@ -12,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-        run: qa-location
+        run: uat-monetizationjob
     spec:
       containers:
-      - name: qa-location
-        image: ttndfame/qa_location:qa-12.3.4
+      - name: uat-monetizationjob
+        image: ttndfame/uat_monetizationjob:uat-6.12.24
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -27,19 +28,26 @@ spec:
           timeoutSeconds: 1
         env:
         - name: ENV_NAME
-          value:  qa
+          value: uat
         - name: MODULE
-          value:  location
+          value:  monetizationjob
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: qa-location
+  name: uat-monetizationjob
+  namespace: uat
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
 spec:
   ports:
-    - name: "www"
+    - name: "http"
       port: 80
+      targetPort: 8080
+    - name: "https"
+      port: 443
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: qa-location
+    run: uat-monetizationjob

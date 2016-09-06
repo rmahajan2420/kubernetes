@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: uat-chat
-        image: ttndfame/uat_chat:uat-6.10.12
+        image: ttndfame/uat_chat:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -31,6 +31,13 @@ spec:
           value: uat
         - name: MODULE
           value:  chat
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-chat-volume
+      volumes:
+      - name: uat-chat-volume
+        hostPath:
+          path: /var/log/app/chat_logs
 ---
 apiVersion: v1
 kind: Service

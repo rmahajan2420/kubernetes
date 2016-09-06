@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: uat-monetizationadmin
-        image: ttndfame/uat_monetizationadmin:uat-6.12.14
+        image: ttndfame/uat_monetizationadmin:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -31,6 +31,13 @@ spec:
           value: uat
         - name: MODULE
           value:  monetizationadmin
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-monetizationadmin-volume
+      volumes:
+      - name: uat-monetizationadmin-volume
+        hostPath:
+          path: /var/log/app/monetizationadmin_logs
 ---
 apiVersion: v1
 kind: Service

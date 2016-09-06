@@ -26,7 +26,7 @@ spec:
           - name: MODULE
             value:  api
         - name: uat-api
-          image: ttndfame/uat_api:uat-6.12.14
+          image: ttndfame/uat_api:uat-6.12.27
           readinessProbe:
             httpGet:
               path: /heartbeat
@@ -40,6 +40,13 @@ spec:
             value:  uat
           - name: MODULE
             value:  api
+          volumeMounts:
+          - mountPath: /opt/jetty/logs
+            name: uat-api-volume
+      volumes:
+      - name: uat-api-volume
+        hostPath:
+          path: /var/log/app/api_logs
 ---
 apiVersion: v1
 kind: Service
@@ -53,7 +60,7 @@ spec:
   ports:
     - name: "http"
       port: 80
-      targetPort: 8080
+      targetPort: 80
     - name: "https"
       port: 443
       targetPort: 8080

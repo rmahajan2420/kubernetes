@@ -20,6 +20,9 @@ spec:
         image: ttndfame/uat_referral:uat-6.10.11
         ports:
         - containerPort:  8080
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: test-volume
         readinessProbe:
           httpGet:
             path: /heartbeat
@@ -31,6 +34,10 @@ spec:
           value: uat
         - name: MODULE
           value:  referral
+      volumes:
+      - name: test-volume
+        hostPath:
+          path: /tmp/test-mod/refferal.log
 ---
 apiVersion: v1
 kind: Service

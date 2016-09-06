@@ -40,6 +40,13 @@ spec:
             value:  SERVER
           - name: MODULE
             value:  APP
+          volumeMounts:
+          - mountPath: /opt/jetty/logs
+            name: SERVER-APP-volume
+      volumes:
+      - name: SERVER-APP-volume
+        hostPath:
+          path: /var/log/app/APP_logs
 ---
 apiVersion: v1
 kind: Service

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: uat-moderator
-        image: ttndfame/uat_moderator:uat-6.12.14
+        image: ttndfame/uat_moderator:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -31,6 +31,13 @@ spec:
           value: uat
         - name: MODULE
           value:  moderator
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-moderator-volume
+      volumes:
+      - name: uat-moderator-volume
+        hostPath:
+          path: /var/log/app/moderator_logs
 ---
 apiVersion: v1
 kind: Service

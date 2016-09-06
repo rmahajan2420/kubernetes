@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: uat-csr
-        image: ttndfame/uat_csr:uat-6.12.22
+        image: ttndfame/uat_csr:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -31,6 +31,13 @@ spec:
           value: uat
         - name: MODULE
           value:  csr
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-csr-volume
+      volumes:
+      - name: uat-csr-volume
+        hostPath:
+          path: /var/log/app/csr_logs
 ---
 apiVersion: v1
 kind: Service

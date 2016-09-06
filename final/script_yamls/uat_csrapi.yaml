@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: uat-csrapi
-        image: ttndfame/uat_csrapi:uat-6.12.22
+        image: ttndfame/uat_csrapi:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -31,6 +31,13 @@ spec:
           value: uat
         - name: MODULE
           value:  csrapi
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-csrapi-volume
+      volumes:
+      - name: uat-csrapi-volume
+        hostPath:
+          path: /var/log/app/csrapi_logs
 ---
 apiVersion: v1
 kind: Service

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: uat-beamarchive
-        image: ttndfame/uat_beamarchive:uat-6.12.14
+        image: ttndfame/uat_beamarchive:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -31,6 +31,13 @@ spec:
           value: uat
         - name: MODULE
           value:  beamarchive
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-beamarchive-volume
+      volumes:
+      - name: uat-beamarchive-volume
+        hostPath:
+          path: /var/log/app/beamarchive_logs
 ---
 apiVersion: v1
 kind: Service

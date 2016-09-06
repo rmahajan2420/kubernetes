@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: uat-location
-        image: ttndfame/uat_location:uat-6.12.14
+        image: ttndfame/uat_location:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -31,6 +31,13 @@ spec:
           value: uat
         - name: MODULE
           value:  location
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-location-volume
+      volumes:
+      - name: uat-location-volume
+        hostPath:
+          path: /var/log/app/location_logs
 ---
 apiVersion: v1
 kind: Service

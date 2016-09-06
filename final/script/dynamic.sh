@@ -17,22 +17,21 @@ env1=$1
 module=$2
 
 cd $YAMLFILEPATH
-if [ $env1 == qa ] 
-then 
-BUCKET_NAME=fameplus-qa-private
-$AWS s3 cp s3://${BUCKET_NAME}/docker/tag.txt .
-elif [ $env1 == uat ]
-then
-BUCKET_NAME=fameplus-uat-2
-$AWS s3 cp s3://${BUCKET_NAME}/docker/tag.txt .
-else
+###Get the tag/version of the module ####
 
-echo "Invalid Env Name. Please enter qa or uat "
+if [ $env1 == qa ]; then
+  BUCKET_NAME=fameplus-qa-private
+  $AWS s3 cp s3://${BUCKET_NAME}/docker/tag.txt .
+elif [ $env1 == uat ]; then
+  BUCKET_NAME=fameplus-uat-2
+  $AWS s3 cp s3://${BUCKET_NAME}/tag.txt .
+else
+  echo "Invalid Env Name. Please enter qa or uat "
 exit 1
 fi
 tag=`cat tag.txt`
 if [ $# != 2 ]; then
-$ECHO "Please Enter ENV name, Module, Image and number of containers"
+  $ECHO "Please Enter ENV name, Module, Image and number of containers"
 exit
 fi
 
@@ -46,27 +45,27 @@ $ECHO  "Generating" $env1"_"$module.yaml
 ###################################################################################
 ###################################################################################
 
-echo -e "##############Taking backup of the existing tag for the applicaton: $module of environment: $env1 ####################"
+$ECHO -e "Taking backup of the existing tag for an applicaton: $module of environment: $env1"
+
 previous_tag=`grep -i "image" $YAMLFILEPATH/$filename | tail -n 1 | awk -F: '{print $3}'`
-if [ -z "${VAR}" ]; then
+
+if [ -z "${previous_tag}" ]; then
   echo "Previous tag not found by the script, exiting !!!!"
   exit 1
 else 
-  echo -e "#########Previous Tag is :- $previous_tag"
+  echo -e "Previous Tag/Version of the $module is :- $previous_tag"
   echo "$previous_tag" > $env1"_"$module"_prev_tag".txt
   aws s3 cp $env1"_"$module"_prev_tag".txt s3://$BUCKET_NAME/kubernetes/${module}/ --region us-east-1 
   if [ $? == 0 ]
     then
-    echo "file sent.."
+    echo "Tag backup file has been sent to s3.."
   else
     echo "file not sent..exiting"
   fi
 fi
 
+#####Checking if module  exists in the appWithNginx.txt
 
-
-
-#Checking if module  exists in the appWithNginx.txt
 grep -i "$module" $FILEPATH/appWithNginx.txt >> /dev/null
 
 if [ $? -ne 0 ]; then

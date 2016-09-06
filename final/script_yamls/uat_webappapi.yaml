@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: uat-webappapi
-        image: ttndfame/uat_webappapi:uat-6.2.2
+        image: ttndfame/uat_webappapi:uat-6.12.26
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -31,6 +31,13 @@ spec:
           value: uat
         - name: MODULE
           value:  webappapi
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-webappapi-volume
+      volumes:
+      - name: uat-webappapi-volume
+        hostPath:
+          path: /var/log/app/webappapi_logs
 ---
 apiVersion: v1
 kind: Service

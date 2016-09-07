@@ -1,7 +1,8 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: qa-tracking
+  name: uat-vodhs
+  namespace: uat
 spec:
   replicas: 1
   strategy:
@@ -12,20 +13,20 @@ spec:
   template:
     metadata:
       labels:
-        run: qa-tracking
+        run: uat-vodhs
     spec: 
       containers: 
-        - name: qa-nginx
+        - name: uat-nginx
           image: ttndfame/nginx:latest
           ports: 
           - containerPort: 80
           env:
           - name: ENV_NAME
-            value:  qa
+            value:  uat
           - name: MODULE
-            value:  tracking
-        - name: qa-tracking
-          image: ttndfame/qa_tracking:qa-12.17.72
+            value:  vodhs
+        - name: uat-vodhs
+          image: ttndfame/uat_vodhs:uat-6.12.27
           readinessProbe:
             httpGet:
               path: /heartbeat
@@ -36,19 +37,33 @@ spec:
           - containerPort: 8080
           env:
           - name: ENV_NAME
-            value:  qa
+            value:  uat
           - name: MODULE
-            value:  tracking
+            value:  vodhs
+          volumeMounts:
+          - mountPath: /opt/jetty/logs
+            name: uat-vodhs-volume
+      volumes:
+      - name: uat-vodhs-volume
+        hostPath:
+          path: /var/log/app/vodhs_logs
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: qa-tracking
+  name: uat-vodhs
+  namespace: uat
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
 spec:
   ports:
-    - name: "www"
+    - name: "http"
       port: 80
       targetPort: 80
+    - name: "https"
+      port: 443
+      targetPort: 8080
   selector:
-    run: qa-tracking
+    run: uat-vodhs
   type: LoadBalancer

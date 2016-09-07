@@ -26,7 +26,7 @@ spec:
           - name: MODULE
             value:  streamms
         - name: uat-streamms
-          image: ttndfame/uat_streamms:uat-6.12.19
+          image: ttndfame/uat_streamms:uat-6.12.27
           readinessProbe:
             httpGet:
               path: /heartbeat
@@ -40,6 +40,13 @@ spec:
             value:  uat
           - name: MODULE
             value:  streamms
+          volumeMounts:
+          - mountPath: /opt/jetty/logs
+            name: uat-streamms-volume
+      volumes:
+      - name: uat-streamms-volume
+        hostPath:
+          path: /var/log/app/streamms_logs
 ---
 apiVersion: v1
 kind: Service

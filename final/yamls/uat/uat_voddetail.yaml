@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: uat-admin
+  name: uat-voddetail
   namespace: uat
 spec:
   replicas: 1
@@ -13,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-        run: uat-admin
+        run: uat-voddetail
     spec:
       containers:
-      - name: uat-admin
-        image: ttndfame/uat_admin:qa-12.21.45
+      - name: uat-voddetail
+        image: ttndfame/uat_voddetail:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -30,12 +30,20 @@ spec:
         - name: ENV_NAME
           value: uat
         - name: MODULE
-          value:  admin
+          value:  voddetail
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-voddetail-volume
+      volumes:
+      - name: uat-voddetail-volume
+        hostPath:
+          path: /var/log/app/voddetail_logs
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: uat-admin
+  name: uat-voddetail
+  namespace: uat
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
@@ -49,4 +57,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: uat-admin
+    run: uat-voddetail

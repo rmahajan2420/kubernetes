@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: uat-monetizationsticker
+  name: uat-monetizationjob
   namespace: uat
 spec:
   replicas: 1
@@ -13,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-        run: uat-monetizationsticker
+        run: uat-monetizationjob
     spec:
       containers:
-      - name: uat-monetizationsticker
-        image: ttndfame/uat_monetizationsticker:uat-6.12.14
+      - name: uat-monetizationjob
+        image: ttndfame/uat_monetizationjob:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -30,12 +30,19 @@ spec:
         - name: ENV_NAME
           value: uat
         - name: MODULE
-          value:  monetizationsticker
+          value:  monetizationjob
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-monetizationjob-volume
+      volumes:
+      - name: uat-monetizationjob-volume
+        hostPath:
+          path: /var/log/app/monetizationjob_logs
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: uat-monetizationsticker
+  name: uat-monetizationjob
   namespace: uat
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
@@ -50,4 +57,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: uat-monetizationsticker
+    run: uat-monetizationjob

@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: uat-jobs
+  name: uat-referral
   namespace: uat
 spec:
   replicas: 1
@@ -13,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-        run: uat-jobs
+        run: uat-referral
     spec:
       containers:
-      - name: uat-jobs
-        image: ttndfame/uat_jobs:uat-6.10.12
+      - name: uat-referral
+        image: ttndfame/uat_referral:uat-6.12.27
         ports:
         - containerPort:  8080
         readinessProbe:
@@ -30,12 +30,19 @@ spec:
         - name: ENV_NAME
           value: uat
         - name: MODULE
-          value:  jobs
+          value:  referral
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: uat-referral-volume
+      volumes:
+      - name: uat-referral-volume
+        hostPath:
+          path: /var/log/app/referral_logs
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: uat-jobs
+  name: uat-referral
   namespace: uat
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
@@ -50,4 +57,4 @@ spec:
       targetPort: 8080
   type: LoadBalancer
   selector:
-    run: uat-jobs
+    run: uat-referral

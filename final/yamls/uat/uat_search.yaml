@@ -14,26 +14,35 @@ spec:
     metadata:
       labels:
         run: uat-search
-    spec:
-      containers:
-      - name: uat-search
-        image: ttndfame/uat_search:uat-6.12.27
-        ports:
-        - containerPort:  8080
-        readinessProbe:
-          httpGet:
-            path: /heartbeat
-            port: 8080
-          initialDelaySeconds: 200
-          timeoutSeconds: 1
-        env:
-        - name: ENV_NAME
-          value: uat
-        - name: MODULE
-          value:  search
-        volumeMounts:
-        - mountPath: /opt/jetty/logs
-          name: uat-search-volume
+    spec: 
+      containers: 
+        - name: uat-nginx
+          image: ttndfame/nginx:latest
+          ports: 
+          - containerPort: 80
+          env:
+          - name: ENV_NAME
+            value:  uat
+          - name: MODULE
+            value:  search
+        - name: uat-search
+          image: ttndfame/uat_search:uat-6.12.32
+          readinessProbe:
+            httpGet:
+              path: /heartbeat
+              port: 8080
+            initialDelaySeconds: 200
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+          env:
+          - name: ENV_NAME
+            value:  uat
+          - name: MODULE
+            value:  search
+          volumeMounts:
+          - mountPath: /opt/jetty/logs
+            name: uat-search-volume
       volumes:
       - name: uat-search-volume
         hostPath:
@@ -51,10 +60,10 @@ spec:
   ports:
     - name: "http"
       port: 80
-      targetPort: 8080
+      targetPort: 80
     - name: "https"
       port: 443
-      targetPort: 8080
-  type: LoadBalancer
+      targetPort: 80
   selector:
     run: uat-search
+  type: LoadBalancer

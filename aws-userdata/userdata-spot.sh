@@ -1,4 +1,25 @@
-#! /bin/bash
+#!/bin/bash
+INSTANCE_ID=$(curl -S http://169.254.169.254/latest/meta-data/instance-id)
+/usr/local/bin/aws ec2 create-tags --region 'us-east-1' --resources $INSTANCE_ID --tags "Key=Name,Value=fame-kubernetes-aws-minion Spot" "Key=Role,Value=fame-kubernetes-aws-minion" "Key=KubernetesCluster,Value=fame-kubernetes-aws"
+/bin/mkdir -p /root/.docker
+cat > /root/.docker/config.json << EOF_JSON
+{
+  "auths": {
+    "https://hub.docker.com": {
+      "auth": "dHRuZGZhbWU6ZmFtZWRlZmF1bHQ="
+    },
+    "https://index.docker.io/v1/": {
+      "auth": "dHRuZGZhbWU6ZmFtZWRlZmF1bHQ="
+    }
+  }
+}
+EOF_JSON
+mkfs -t ext4 /dev/xvdba
+mkdir -p /var/log/app
+mount /dev/xvdba /var/log/app
+curl -L http://toolbelt.treasuredata.com/sh/install-ubuntu-precise-td-agent2.sh | sh
+wget -O /etc/td-agent/td-agent.conf https://s3.amazonaws.com/fameplus-uat-2/kubernetes/kibana/td-agent.conf
+service td-agent restart
 mkdir -p /var/cache/kubernetes-install
 cd /var/cache/kubernetes-install
 cat > kube_env.yaml << __EOF_KUBE_ENV_YAML
@@ -67,6 +88,8 @@ mv bootstrap /etc/kubernetes/
 cat > /etc/rc.local << EOF_RC_LOCAL
 #!/bin/sh -e
 /etc/kubernetes/bootstrap
+/bin/cp /root/.docker/config.json /var/lib/kubelet/
+mount /dev/xvdba /var/log/app
 exit 0
 EOF_RC_LOCAL
 /etc/kubernetes/bootstrap

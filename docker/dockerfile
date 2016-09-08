@@ -11,7 +11,8 @@ luarocks \
 python-pip
 RUN /usr/bin/pip install awscli
 RUN luarocks install luasocket
-ADD startNginx.sh /opt/
+RUN wget -O /opt/startNginx.sh https://s3.amazonaws.com/fameplus-kubernetes/nginx/startNginx.sh
+RUN chmod 755 /opt/startNginx.sh
 RUN rm -rf /etc/nginx/nginx.conf
 RUN mkdir -p /etc/nginx/ssl
 COPY nginx.conf /etc/nginx/nginx.conf 

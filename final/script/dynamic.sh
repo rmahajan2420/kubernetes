@@ -47,7 +47,7 @@ $ECHO  "Generating" $env1"_"$module.yaml
 
 $ECHO -e "Taking backup of the existing tag for an applicaton: $module of environment: $env1"
 
-previous_tag=`grep -i "image" $TAGFILEPATH/$env1/$filename | tail -n 1 | awk -F: '{print $3}'`
+previous_tag=`grep -i "image" $YAMLFILEPATH/$env1/$filename | tail -n 1 | awk -F: '{print $3}'`
 
 if [ -z "${previous_tag}" ]; then
   echo "Previous tag not found by the script, exiting !!!!"

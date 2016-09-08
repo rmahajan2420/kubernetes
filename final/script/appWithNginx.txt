@@ -1,6 +1,8 @@
 homescreen
 api
-monetization-sticker
+monetizationsticker
 vodhs
 beamdetail
 streamms
+voddetail
+web

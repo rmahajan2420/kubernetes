@@ -14,26 +14,35 @@ spec:
     metadata:
       labels:
         run: uat-monetizationsticker
-    spec:
-      containers:
-      - name: uat-monetizationsticker
-        image: ttndfame/uat_monetizationsticker:uat-6.12.4
-        ports:
-        - containerPort:  8080
-        readinessProbe:
-          httpGet:
-            path: /heartbeat
-            port: 8080
-          initialDelaySeconds: 200
-          timeoutSeconds: 1
-        env:
-        - name: ENV_NAME
-          value: uat
-        - name: MODULE
-          value:  monetizationsticker
-        volumeMounts:
-        - mountPath: /opt/jetty/logs
-          name: uat-monetizationsticker-volume
+    spec: 
+      containers: 
+        - name: uat-nginx
+          image: ttndfame/nginx:latest
+          ports: 
+          - containerPort: 80
+          env:
+          - name: ENV_NAME
+            value:  uat
+          - name: MODULE
+            value:  monetizationsticker
+        - name: uat-monetizationsticker
+          image: ttndfame/uat_monetizationsticker:uat-6.12.31
+          readinessProbe:
+            httpGet:
+              path: /heartbeat
+              port: 8080
+            initialDelaySeconds: 200
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+          env:
+          - name: ENV_NAME
+            value:  uat
+          - name: MODULE
+            value:  monetizationsticker
+          volumeMounts:
+          - mountPath: /opt/jetty/logs
+            name: uat-monetizationsticker-volume
       volumes:
       - name: uat-monetizationsticker-volume
         hostPath:
@@ -51,10 +60,10 @@ spec:
   ports:
     - name: "http"
       port: 80
-      targetPort: 8080
+      targetPort: 80
     - name: "https"
       port: 443
-      targetPort: 8080
-  type: LoadBalancer
+      targetPort: 80
   selector:
     run: uat-monetizationsticker
+  type: LoadBalancer

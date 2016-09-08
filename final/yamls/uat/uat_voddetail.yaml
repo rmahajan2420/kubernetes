@@ -14,26 +14,35 @@ spec:
     metadata:
       labels:
         run: uat-voddetail
-    spec:
-      containers:
-      - name: uat-voddetail
-        image: ttndfame/uat_voddetail:uat-6.12.27
-        ports:
-        - containerPort:  8080
-        readinessProbe:
-          httpGet:
-            path: /heartbeat
-            port: 8080
-          initialDelaySeconds: 200
-          timeoutSeconds: 1
-        env:
-        - name: ENV_NAME
-          value: uat
-        - name: MODULE
-          value:  voddetail
-        volumeMounts:
-        - mountPath: /opt/jetty/logs
-          name: uat-voddetail-volume
+    spec: 
+      containers: 
+        - name: uat-nginx
+          image: ttndfame/nginx:latest
+          ports: 
+          - containerPort: 80
+          env:
+          - name: ENV_NAME
+            value:  uat
+          - name: MODULE
+            value:  voddetail
+        - name: uat-voddetail
+          image: ttndfame/uat_voddetail:uat-6.12.29
+          readinessProbe:
+            httpGet:
+              path: /heartbeat
+              port: 8080
+            initialDelaySeconds: 200
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+          env:
+          - name: ENV_NAME
+            value:  uat
+          - name: MODULE
+            value:  voddetail
+          volumeMounts:
+          - mountPath: /opt/jetty/logs
+            name: uat-voddetail-volume
       volumes:
       - name: uat-voddetail-volume
         hostPath:
@@ -51,10 +60,10 @@ spec:
   ports:
     - name: "http"
       port: 80
-      targetPort: 8080
+      targetPort: 80
     - name: "https"
       port: 443
-      targetPort: 8080
-  type: LoadBalancer
+      targetPort: 80
   selector:
     run: uat-voddetail
+  type: LoadBalancer

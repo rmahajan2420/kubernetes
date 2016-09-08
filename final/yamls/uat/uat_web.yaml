@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: uat-api
+  name: uat-web
   namespace: uat
 spec:
   replicas: 1
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        run: uat-api
+        run: uat-web
     spec: 
       containers: 
         - name: uat-nginx
@@ -24,9 +24,9 @@ spec:
           - name: ENV_NAME
             value:  uat
           - name: MODULE
-            value:  api
-        - name: uat-api
-          image: ttndfame/uat_api:uat-6.12.27
+            value:  web
+        - name: uat-web
+          image: ttndfame/uat_web:uat-6.12.31
           readinessProbe:
             httpGet:
               path: /heartbeat
@@ -39,19 +39,19 @@ spec:
           - name: ENV_NAME
             value:  uat
           - name: MODULE
-            value:  api
+            value:  web
           volumeMounts:
           - mountPath: /opt/jetty/logs
-            name: uat-api-volume
+            name: uat-web-volume
       volumes:
-      - name: uat-api-volume
+      - name: uat-web-volume
         hostPath:
-          path: /var/log/app/api_logs
+          path: /var/log/app/web_logs
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: uat-api
+  name: uat-web
   namespace: uat
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
@@ -65,5 +65,5 @@ spec:
       port: 443
       targetPort: 80
   selector:
-    run: uat-api
+    run: uat-web
   type: LoadBalancer

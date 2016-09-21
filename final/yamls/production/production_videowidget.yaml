@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: production-videowidget
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: production-videowidget
+    spec:
+      containers:
+      - name: production-videowidget
+        image: ttndfame/production_videowidget:v5.22.13
+        ports:
+        - containerPort:  8080
+        readinessProbe:
+          httpGet:
+            path: /heartbeat
+            port: 8080
+          initialDelaySeconds: 200
+          timeoutSeconds: 1
+        env:
+        - name: ENV_NAME
+          value: production
+        - name: MODULE
+          value:  videowidget
+        volumeMounts:
+        - mountPath: /opt/jetty/logs
+          name: production-videowidget-volume
+      volumes:
+      - name: production-videowidget-volume
+        hostPath:
+          path: /var/log/app/videowidget_logs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: production-videowidget
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::442793157362:server-certificate/livfame_2016
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+spec:
+  ports:
+    - name: "http"
+      port: 80
+      targetPort: 8080
+    - name: "https"
+      port: 443
+      targetPort: 8080
+  type: LoadBalancer
+  selector:
+    run: production-videowidget
